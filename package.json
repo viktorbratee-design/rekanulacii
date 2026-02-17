@@ -1,0 +1,47 @@
+{
+  "name": "nefroplus-elite",
+  "version": "1.0.4",
+  "description": "Nefroplus Elite 2026 - Dialysis Management System",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "deploy": "electron-builder build --win --publish always"
+  },
+  "keywords": [],
+  "author": "Viktor",
+  "license": "ISC",
+  "dependencies": {
+    "electron-updater": "^6.1.7",
+    "firebase": "^10.7.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.elite.rekanulacii",
+    "productName": "Nefroplus Elite 2026",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "logo.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Nefroplus Elite 2026"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "viktorbratee-design",
+        "repo": "rekanulacii"
+      }
+    ]
+  }
+}

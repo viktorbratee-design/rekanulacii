@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <title>NefroPlus Elite</title>
+    <style>
+        :root { --primary: #0ea5e9; --success: #10b981; --error: #f43f5e; --nav-bg: #0f172a; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        body { height: 100vh; width: 100vw; overflow: hidden; background: #e2e8f0; }
+
+        /* --- НОВО: SPLASH SCREEN СТИЛОВИ --- */
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: #0f172a; /* Темна позадина како Nav лентата */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000; /* Најгоре над сè */
+            transition: opacity 0.6s ease-out;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            animation: spin 1s linear infinite;
+            margin-top: 20px;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* ---------------------------------- */
+
+        /* ТЕМНА И ЗАМАТЕНА ПОЗАДИНА */
+        #login-page { 
+            height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; 
+            background: url('1.jpg') no-repeat center center; background-size: cover; position: fixed; z-index: 9999; 
+        }
+        #login-page::before { 
+            content: ""; position: absolute; inset: 0; 
+            background: rgba(15, 23, 42, 0.7); 
+            backdrop-filter: blur(10px); 
+        }
+
+        /* ОСТАТОКОТ ОД ТВОИТЕ СТИЛОВИ (copy-paste од твојот код) */
+        .login-card { 
+            position: relative; 
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 40px; border-radius: 20px; width: 360px; text-align: center; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3); border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .logo-img { width: 100px; margin-bottom: 20px; }
+        .rem-box { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px; font-size: 14px; color: #1e293b; cursor: pointer; font-weight: 500; }
+        .rem-box input { width: 18px; height: 18px; cursor: pointer; margin: 0; }
+        .top-nav { display: flex; align-items: center; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); height: 70px; color: white; padding: 0 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); position: relative; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-section-left { display: flex; justify-content: left; align-items: left; flex: 1; text-align: left; }
+        .tab-container { display: flex; gap: 8px; margin-left: 30px; background: rgba(255, 255, 255, 0.05); padding: 5px; border-radius: 12px; }
+        .tab { display: flex; align-items: center; padding: 0 18px; cursor: pointer; font-weight: 600; color: #94a3b8; font-size: 11px; text-transform: uppercase; height: 40px; border-radius: 8px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); letter-spacing: 0.5px; }
+        .tab.active { color: white; background: var(--primary); box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3); transform: translateY(-1px); }
+        .logout-btn { background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); padding: 8px 16px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .logout-btn:hover { background: #f43f5e; color: white; }
+        #city-selector { background: #1e293b; color: white; border: 1px solid #334155; padding: 6px; border-radius: 6px; font-size: 11px; }
+        .main-content { display: grid; grid-template-columns: 320px 1fr; gap: 15px; padding: 15px; height: calc(100vh - 60px); }
+        .card { background: white; padding: 20px; border-radius: 15px; border: 1px solid #cbd5e1; display: flex; flex-direction: column; overflow: hidden; }
+        input, select, textarea { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; width: 100%; margin-bottom: 12px; font-size: 13px; }
+        .btn { padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; text-transform: uppercase; transition: 0.2s; }
+        .btn-blue { background: var(--primary); width: 100%; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8fafc; padding: 12px; text-align: left; border-bottom: 2px solid #edf2f7; font-size: 10px; color: #64748b; position: sticky; top: 0; }
+        td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <img src="logo.png" style="width: 120px; filter: drop-shadow(0 0 10px rgba(14,165,233,0.5));">
+        <h2 style="color: white; margin-top: 20px; font-weight: 300; letter-spacing: 2px;">NEFROPLUS ELITE 2026</h2>
+        <p style="color: #94a3b8; font-size: 12px; margin-top: 5px;">ВЕ МОЛИМЕ ПОЧЕКАЈТЕ...</p>
+        <div class="spinner"></div>
+    </div>
+
+    <div id="login-page">
+        <div class="login-card">
+            <img src="logo.png" class="logo-img">
+            <input type="email" id="email" placeholder="Е-пошта">
+            <input type="password" id="pass" placeholder="Лозинка">
+            
+            <div class="rem-box" onclick="document.getElementById('rem').click()">
+                <input type="checkbox" id="rem" onclick="event.stopPropagation()">
+                <span>Запомни ме</span>
+            </div>
+
+            <button id="l-btn" onclick="doLogin()" class="btn btn-blue">ПРИЈАВИ СЕ</button>
+            <button onclick="window.api.exitApp()" style="margin-top: 15px; background: none; border: none; color: #f43f5e; font-size: 11px; cursor: pointer; font-weight: bold; text-decoration: underline;">ИЗЛЕЗ ОД АПЛИКАЦИЈА</button>
+            <div style="font-size: 9px; color: #0f172a; margin-top: 25px; font-weight: bold;">POWERED BY VNASTESKI 2026</div>
+        </div>
+    </div>
+
+    <div id="dashboard" style="display:none; flex-direction: column; height: 100vh;">
+        <div class="top-nav">
+            <div class="nav-section-left">
+                <img src="logo.png" style="height:40px;">
+                <div style="margin-left: 12px; display: flex; flex-direction: column; justify-content: center;">
+                    <span id="app-version" style="color: #94a3b8; font-size: 10px; font-weight: bold;">v1.0.0</span>
+                    <div id="update-indicator" style="display: none; align-items: center; gap: 4px; margin-top: 2px;">
+                        <div style="width: 7px; height: 7px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981;"></div>
+                        <span style="font-size: 8px; color: #10b981; font-weight: bold;">ПРЕВЗЕМАЊЕ...</span>
+                    </div>
+                </div>
+                <div class="tab-container">
+                    <div id="tab-r" class="tab active" onclick="changeTab('r')">Реканулации (0)</div>
+                    <div id="tab-k" class="tab" onclick="changeTab('k')">Компликации (0)</div>
+                    <div id="tab-i" class="tab" onclick="changeTab('i')">Инфекции (0)</div>
+                    <div id="tab-h" class="tab" onclick="changeTab('h')">Хоспитализации (0)</div>
+                </div>
+                <div id="dev-box" style="display:none; margin-left: 20px;">
+                    <select id="city-selector" onchange="updateUI()">
+                        <option value="СИТЕ ЦЕНТРИ">СИТЕ ЦЕНТРИ</option>
+                        <option value="ТЕТОВО">ТЕТОВО</option>
+                        <option value="ГОСТИВАР">ГОСТИВАР</option>
+                        <option value="КИЧЕВО">КИЧЕВО</option>
+                        <option value="ОХРИД">ОХРИД</option>
+                        <option value="БИТОЛА">БИТОЛА</option>
+                        <option value="ПРИЛЕП">ПРИЛЕП</option>
+                        <option value="ВЕЛЕС">ВЕЛЕС</option>
+                        <option value="КАВАДАРЦИ">КАВАДАРЦИ</option>
+                    </select>
+                </div>
+            </div>
+            <div class="nav-section-right">
+                <span id="loc-text" style="background: rgba(14, 165, 233, 0.1); color: var(--primary); padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; border: 1px solid rgba(14, 165, 233, 0.2);">---</span>
+                <button onclick="location.reload()" class="logout-btn">ОДЈАВА</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card" id="form-container"></div>
+            <div class="card" style="padding:0;">
+                <div style="overflow-y:auto; flex-grow:1;">
+                    <table>
+                        <thead><tr id="h-table"></tr></thead>
+                        <tbody id="b-table"></tbody>
+                    </table>
+                </div>
+                <div style="padding:10px; border-top:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background: #f8fafc;">
+                    <div style="display:flex; gap:10px; flex:1;">
+                        <button onclick="exportExcel()" class="btn" style="background:var(--success); flex:1; padding:8px; font-size:11px;">EXCEL ИЗВЕШТАЈ</button>
+                        <button onclick="window.api.printPDF()" class="btn btn-blue" style="flex:1; padding:8px; font-size:11px;">ПЕЧАТИ PDF</button>
+                    </div>
+                    <div style="font-size:9px; color:#94a3b8; margin-left:20px; font-weight:bold;">POWERED BY VNASTESKI 2026</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 2. НОВО: СКРИПТА ЗА ТРГНУВАЊЕ НА SPLASH ЕКРАНОТ ---
+        window.addEventListener('load', () => {
+            // Даваме 2.5 секунди за сè во позадина (Firebase/Styles) да се „смири“
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) {
+                    splash.style.opacity = '0';
+                    setTimeout(() => {
+                        splash.style.display = 'none';
+                    }, 600); // По чекањето на транзицијата, целосно го тргаме
+                }
+            }, 2500);
+        });
+        // ------------------------------------------------------
+
+        let user = {}, store = { r:[], k:[], i:[], h:[] }, activeTab = 'r';
+
+        window.onload = () => {
+            const saved = localStorage.getItem('email');
+            if(saved) { document.getElementById('email').value = saved; document.getElementById('rem').checked = true; }
+        };
+
+        const toKirilica = (t) => {
+            if(!t) return "";
+            const map = { 'TETOVO':'ТЕТОВО', 'GOSTIVAR':'ГОСТИВАР', 'KICEVO':'КИЧЕВО', 'OHRID':'ОХРИД', 'BITOLA':'БИТОЛА', 'PRILEP':'ПРИЛЕП', 'VELES':'ВЕЛЕС', 'KAVADARCI':'КАВАДАРЦИ' };
+            return map[t.toUpperCase()] || t;
+        };
+
+        async function doLogin() {
+            const lBtn = document.getElementById('l-btn');
+            lBtn.innerText = "ВЕ МОЛИМЕ ПОЧЕКАЈТЕ...";
+            lBtn.disabled = true;
+            try {
+                const res = await window.api.login(document.getElementById('email').value, document.getElementById('pass').value);
+                if(res.success) {
+                    if(document.getElementById('rem').checked) localStorage.setItem('email', document.getElementById('email').value);
+                    user = { ...res, DC: toKirilica(res.DC || "") };
+                    document.getElementById('login-page').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'flex';
+                    if(user.role === 'dev') document.getElementById('dev-box').style.display = 'block';
+                    document.getElementById('loc-text').innerText = user.DC || "СИТЕ ЦЕНТРИ";
+                    changeTab('r');
+                } else {
+                    alert("Погрешна е-пошта или лозинка!"); lBtn.innerText = "ПРИЈАВИ СЕ"; lBtn.disabled = false;
+                }
+            } catch(e) { lBtn.innerText = "ПРИЈАВИ СЕ"; lBtn.disabled = false; }
+        }
+
+        function changeTab(t) {
+            activeTab = t;
+            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + t).classList.add('active');
+            renderForm();
+            updateUI();
+        }
+
+        function renderForm() {
+            const cont = document.getElementById('form-container');
+            let f = `<h4 style="margin-bottom:10px; font-size:14px;">НОВ ВНЕС</h4>
+                     <input id="p_id" placeholder="ID на пациент">
+                     <input id="p_ime" placeholder="Име и Презиме">
+                     <input type="date" id="p_datum">`;
+            if(activeTab==='r') f += `<select id="v1"><option>AVF</option><option>AVG</option></select><select id="v2"><option>Артерија</option><option>Вена</option></select><input id="v3" placeholder="Игла">`;
+            else if(activeTab==='k') f += `<select id="v1"><option>AVF</option><option>AVG</option></select><select id="v2"><option>Хематом</option><option>Тромбоза</option><option>Реканулација</option><option>Рециркулација</option></select><textarea id="v3" placeholder="Третман"></textarea>`;
+            else if(activeTab==='i') f += `<select id="v1"><option>Локална</option><option>Системска</option></select><textarea id="v2" placeholder="Терапија"></textarea>`;
+            else f += `<select id="v1"><option>УКНС</option><option>ЗНС</option><option>СИСТИНА</option><option>ЖАН МИТРЕВ</option><option>Друга институција</option></select><input id="v2" placeholder="Причина"><textarea id="v3" placeholder="Инфо"></textarea>`;
+            cont.innerHTML = f + `<button id="s-btn" onclick="save()" class="btn btn-blue">ЗАЧУВАЈ</button>`;
+            document.getElementById('p_datum').valueAsDate = new Date();
+        }
+
+        async function save() {
+            const sBtn = document.getElementById('s-btn');
+            let city = (user.role==='dev') ? document.getElementById('city-selector').value : user.DC;
+            if(city.includes("СИТЕ")) return alert("Изберете конкретен град!");
+            
+            const data = { 
+                pid: document.getElementById('p_id').value, ime: document.getElementById('p_ime').value, 
+                datum: document.getElementById('p_datum').value, dc: toKirilica(city),
+                v1: document.getElementById('v1')?.value||"", v2: document.getElementById('v2')?.value||"", v3: document.getElementById('v3')?.value||"" 
+            };
+            if(!data.pid || !data.ime) return alert("Пополнете сè!");
+            
+            sBtn.disabled = true; sBtn.innerText = "СЕ ЗАЧУВУВА...";
+            await window.api.saveData({r:'rekanulacije', k:'komplikacije', i:'infekcije', h:'hospitalizacije'}[activeTab], data);
+            document.getElementById('p_id').value = ""; document.getElementById('p_ime').value = "";
+            sBtn.disabled = false; sBtn.innerText = "ЗАЧУВАЈ";
+        }
+
+        function updateUI() {
+            const filter = toKirilica(user.role==='dev' ? document.getElementById('city-selector').value : user.DC);
+            ['r','k','i','h'].forEach(k => {
+                const count = (store[k] || []).filter(i => (filter.includes("СИТЕ") || toKirilica(i.dc || i.DC) === filter)).length;
+                document.getElementById('tab-' + k).innerText = `${{r:'Реканулации',k:'Компликации',i:'Инфекции',h:'Хоспитализации'}[k]} (${count})`;
+            });
+            const list = (store[activeTab] || []).filter(i => (filter.includes("СИТЕ") || toKirilica(i.dc || i.DC) === filter));
+            let h = `<th>ID</th><th>Пациент</th><th>Дата</th><th>Центар</th>`;
+            if(activeTab==='r') h += `<th>Тип</th><th>Место</th><th>Игла</th>`;
+            else if(activeTab==='k') h += `<th>Тип</th><th>Проблем</th><th>Третман</th>`;
+            else if(activeTab==='i') h += `<th>Тип</th><th>Терапија</th>`;
+            else h += `<th>Установа</th><th>Причина</th><th>Инфо</th>`;
+
+            document.getElementById('h-table').innerHTML = h + `<th></th>`;
+            document.getElementById('b-table').innerHTML = list.map(i => `<tr><td>${i.pid}</td><td><b>${i.ime}</b></td><td>${i.datum}</td><td style="color:var(--primary); font-weight:bold;">${toKirilica(i.dc||i.DC)}</td><td>${i.v1}</td><td>${i.v2}</td>${i.v3?`<td>${i.v3}</td>`:''}<td>${user.role==='dev'?`<button onclick=\"del('${i.id}')\" style=\"color:red; background:none; border:none; cursor:pointer;\">✕</button>`:''}</td></tr>`).join('');
+        }
+
+        async function del(id) { if(confirm("Избриши?")) { await window.api.deleteData({r:'rekanulacije', k:'komplikacije', i:'infekcije', h:'hospitalizacije'}[activeTab], id); renderForm(); } }
+        
+        function exportExcel() {
+            const filter = toKirilica(user.role==='dev' ? document.getElementById('city-selector').value : user.DC);
+            const data = (store[activeTab] || []).filter(i => (filter.includes("СИТЕ") || toKirilica(i.dc || i.DC) === filter));
+            window.api.exportToExcel(data, `Izvestaj_2026_${activeTab}`);
+        }
+
+        window.api.onRekanulacije(d => { store.r = d; updateUI(); });
+        window.api.onKomplikacije(d => { store.k = d; updateUI(); });
+        window.api.onInfekcije(d => { store.i = d; updateUI(); });
+        window.api.onHospitalizacije(d => { store.h = d; updateUI(); });
+
+        window.api.getVersion().then(v => {
+            const versionEl = document.getElementById('app-version');
+            if(versionEl) versionEl.innerText = `v${v}`;
+        });
+
+        window.api.onUpdateMessage((msg) => {
+            const indicator = document.getElementById('update-indicator');
+            if(indicator) {
+                if (msg.includes("Пронајдена") || msg.includes("Превземање")) {
+                    indicator.style.display = 'flex';
+                } else {
+                    indicator.style.display = 'none';
+                }
+            }
+        });    
+    </script>
+</body>
+</html>
