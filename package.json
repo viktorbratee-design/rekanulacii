@@ -1,0 +1,41 @@
+{
+  "name": "rekanulacii",
+  "version": "1.0.4",
+  "description": "Nefroplus Elite 2026",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "deploy": "electron-builder build --publish always"
+  },
+  "author": "viktorbratee-design",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {
+    "electron-updater": "^6.1.7"
+  },
+  "build": {
+    "appId": "com.viktor.nefroplus",
+    "productName": "Nefroplus Elite 2026",
+    "directories": {
+      "output": "dist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "viktorbratee-design",
+        "repo": "rekanulacii"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
